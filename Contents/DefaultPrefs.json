@@ -1,0 +1,8 @@
+[
+  {
+    "id":"static_poster_path",
+    "label":"Path for static Poster Image",
+    "type":"text",
+    "default":""
+  }
+]

@@ -1,7 +1,25 @@
 [
   {
+    "id": "static_poster",
+    "label": "Poster Image Replacement",
+    "type": "bool",
+    "default": "true"
+  },
+  {
     "id":"static_poster_path",
     "label":"Path for static Poster Image",
+    "type":"text",
+    "default":""
+  },
+  {
+    "id": "static_background",
+    "label": "Background Image Replacement",
+    "type": "bool",
+    "default": "true"
+  },
+  {
+    "id":"static_background_path",
+    "label":"Path for static Background Image",
     "type":"text",
     "default":""
   }

@@ -27,16 +27,17 @@ class StaticMediaAgent(Agent.Movies):
     (root_file, ext) = os.path.splitext(os.path.basename(part.file))
     metadata.title = root_file
 
-    if Prefs['static_poster_path']:
-      data = Core.storage.load(Prefs['static_poster_path'])
-    else:
-      data = Core.storage.load(os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), STATIC_POSTER))
-    
-    media_hash = hashlib.md5(data).hexdigest()
+    if Prefs['static_poster']:  
+      if Prefs['static_poster_path']:
+        data = Core.storage.load(Prefs['static_poster_path'])
+      else:
+        data = Core.storage.load(os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), STATIC_POSTER))
+      
+      media_hash = hashlib.md5(data).hexdigest()
 
-    if media_hash not in metadata.posters:
-      metadata.posters[media_hash] = Proxy.Media(data, sort_order=1)
-      Log('Static poster added for %s' % metadata.title)
+      if media_hash not in metadata.posters:
+        metadata.posters[media_hash] = Proxy.Media(data, sort_order=1)
+        Log('Static poster added for %s' % metadata.title)
     
     if Prefs['static_background']:  
       if Prefs['static_background_path']:

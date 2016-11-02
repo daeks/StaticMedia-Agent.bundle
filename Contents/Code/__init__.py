@@ -19,7 +19,7 @@ class StaticMediaAgent(Agent.Movies):
   def search(self, results, media, lang):
 
     Log('Searching for %s' % media.name)
-    results.Append(MetadataSearchResult(id = media.primary_metadata.id, name = media.name, year = None, score = 100, lang = lang))
+    results.Append(MetadataSearchResult(id = media.id, name = media.name, year = None, score = 100, lang = lang))
 
   def update(self, metadata, media, lang):
   

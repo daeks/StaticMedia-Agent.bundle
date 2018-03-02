@@ -4,6 +4,8 @@
 <dict>
   <key>CFBundleIdentifier</key>
   <string>com.plexapp.agents.staticmedia</string>
+  <key>PlexAgentAttributionText</key>
+  <string>This is a Metadata Agent for adding a static poster or background images to movies. The intention of this agent is to prevent spoilers on specific libraries like TV recordings. Both images can be overwritten by custom ones. Full qualified path is required for that.&lt;br/&gt;&lt;br/&gt;&lt;a href=&quot;http://forums.plex.tv/discussion/241713/rel-static-media-assets-agent&quot;&gt;Plex Forum Support&lt;/a&gt;</string>
   <key>PlexFrameworkVersion</key>
   <string>2</string>
   <key>PlexPluginClass</key>

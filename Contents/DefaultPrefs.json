@@ -22,5 +22,17 @@
     "label":"Path for static Background Image",
     "type":"text",
     "default":""
+  },
+  {
+    "id":"filename",
+    "label":"Use filename as title",
+    "type":"bool",
+    "default":"false"
+  },
+  {
+    "id":"filemdate",
+    "label":"Use modified date as originally available date",
+    "type":"bool",
+    "default":"false"
   }
 ]

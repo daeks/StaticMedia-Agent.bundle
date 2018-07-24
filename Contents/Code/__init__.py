@@ -1,6 +1,7 @@
-import hashlib, inspect, os, datetime
+import hashlib, inspect, os, datetime, re
 
-STATIC_POSTER = 'static_poster.png'
+STATIC_POSTER_SHOWS = 'static_poster.png'
+STATIC_POSTER_MOVIES = 'static_poster.png'
 STATIC_BACKGROUND = 'static_background.png'
 
 def Start():
@@ -12,12 +13,7 @@ def ValidatePrefs():
 def loadStaticMediaMovies(metadata, media):
   part = media.items[0].parts[0]
   (root_file, ext) = os.path.splitext(os.path.basename(part.file))
-  
-  if Prefs['filename']:
-    metadata.title = root_file
-  else:
-    metadata.title = None
-  
+   
   if Prefs['filemdate']:
     mod_time = os.path.getmtime(part.file)
     date = datetime.date.fromtimestamp(mod_time)
@@ -26,15 +22,27 @@ def loadStaticMediaMovies(metadata, media):
   else:
     metadata.year = None
     metadata.originally_available_at = None
-
+    
+  if Prefs['filename']:
+    metadata.title = root_file
+    match = re.search(r"\((\d+)\)", root_file)
+    if match:
+      metadata.year = int(match.group(1))
+      metadata.originally_available_at = datetime.datetime(metadata.year, 1, 1)
+      Log('[STATIC] Found year %s for %s' % (match.group(1), root_file))
+  else:
+    metadata.title = None
+    
   if Prefs['static_poster']:
     if Prefs['static_poster_path']:
       data = Core.storage.load(Prefs['static_poster_path'])
     else:
-      data = Core.storage.load(os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), STATIC_POSTER))
+      data = Core.storage.load(os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), STATIC_POSTER_MOVIES))
     media_hash = hashlib.md5(data).hexdigest()
 
-    tmp = metadata.posters
+    tmp = []
+    for index in metadata.posters:
+      tmp.append(index)
     for index in tmp:
       if index != media_hash:
         del metadata.posters[index]
@@ -50,7 +58,9 @@ def loadStaticMediaMovies(metadata, media):
       data = Core.storage.load(os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), STATIC_BACKGROUND))
     media_hash = hashlib.md5(data).hexdigest()
 
-    tmp = metadata.art
+    tmp = []
+    for index in metadata.art:
+      tmp.append(index)
     for index in tmp:
       if index != media_hash:
         del metadata.art[index]
@@ -69,7 +79,7 @@ def loadStaticMediaTVShows(metadata, media):
     if Prefs['static_poster_path']:
       poster = Core.storage.load(Prefs['static_poster_path'])
     else:
-      poster = Core.storage.load(os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), STATIC_POSTER))
+      poster = Core.storage.load(os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), STATIC_POSTER_SHOWS))
     media_hash_poster = hashlib.md5(poster).hexdigest()
     
     if Prefs['static_background_path']:
@@ -78,7 +88,9 @@ def loadStaticMediaTVShows(metadata, media):
       background = Core.storage.load(os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), STATIC_BACKGROUND))
     media_hash_background = hashlib.md5(background).hexdigest()
     
-    tmp = metadata.posters
+    tmp = []
+    for index in metadata.posters:
+      tmp.append(index)
     for index in tmp:
       if index != media_hash_poster:
         del metadata.posters[index]
@@ -88,7 +100,9 @@ def loadStaticMediaTVShows(metadata, media):
       Log('[STATIC] Static poster added for %s' % media.title)
     
     for snum, season in media.seasons.iteritems():
-      tmp = metadata.seasons[season.index].posters
+      tmp = []
+      for index in metadata.seasons[season.index].posters:
+        tmp.append(index)
       for index in tmp:
         if index != media_hash_poster:
           del metadata.seasons[season.index].posters[index]
@@ -105,7 +119,9 @@ def loadStaticMediaTVShows(metadata, media):
         else:
           metadata.seasons[season.index].episodes[episode.index].title = None
         
-        tmp = metadata.seasons[season.index].episodes[episode.index].thumbs
+        tmp = []
+        for index in metadata.seasons[season.index].episodes[episode.index].thumbs:
+          tmp.append(index)
         for index in tmp:
           if index != media_hash_background:
             del metadata.seasons[season.index].episodes[episode.index].thumbs[index]
@@ -121,7 +137,9 @@ def loadStaticMediaTVShows(metadata, media):
       data = Core.storage.load(os.path.join(os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))), STATIC_BACKGROUND))
     media_hash = hashlib.md5(data).hexdigest()
     
-    tmp = metadata.art
+    tmp = []
+    for index in metadata.art:
+      tmp.append(index)
     for index in tmp:
       if index != media_hash:
         del metadata.art[index]
@@ -131,7 +149,9 @@ def loadStaticMediaTVShows(metadata, media):
       Log('[STATIC] Static background added for %s' % metadata.title)
 
     for snum, season in media.seasons.iteritems():
-      tmp = metadata.seasons[season.index].art
+      W = []
+      for index in metadata.seasons[season.index].art:
+        tmp.append(index)
       for index in tmp:
         if index != media_hash:
           del metadata.seasons[season.index].art[index]
